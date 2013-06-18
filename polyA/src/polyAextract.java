@@ -1,5 +1,5 @@
 //Reynaldo Morillo
-// 6/2/2013
+//Samir Dahmani
 
 /**To make this program work, you need to create a folder that contains the following files:
  * 
