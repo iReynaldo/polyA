@@ -1,5 +1,5 @@
 //Reynaldo Morillo
-//Samir Dahmani
+// 6/2/2013
 
 /**To make this program work, you need to create a folder that contains the following files:
  * 
@@ -27,135 +27,245 @@ import net.sf.picard.sam.CreateSequenceDictionary;
 import net.sf.picard.util.*;
 
 public class polyAextract {
-
-	public static void main(String[] args) throws IOException {
-		// This creates a variable of type file.
+	//--------------Samir--------------
+	static String bases;
+	static String feed;
+	//--------------Samir--------------
+	
+	public static void main (String[] args) throws IOException {
+		//This creates a variable of type file.
 		File genome = new File("/");
-		// This creates a variable of type file.
+		//This creates a variable of type file.
 		File polyAfile = new File("/");
 		Integer numberToExtract = 0;
-		Integer tailLength = 0;
+		Integer tailLength = 0; 
 		File file = new File("OutputFile");
-		int i = 0;
+		int i=0;
 		boolean printHelp = false;
-		while (i < args.length && args[i].charAt(0) == '-') {
-			if ("-f".equalsIgnoreCase(args[i])) {
+		while(i<args.length && args[i].charAt(0)=='-') {
+			if("-f".equalsIgnoreCase(args[i])) {
 				i++;
 				genome = new File(args[i]);
-			} else if ("-b".equalsIgnoreCase(args[i])) {
+			} else if("-b".equalsIgnoreCase(args[i])) {
 				i++;
-				polyAfile = new File(args[i]); // age.parseInt(args[i]);
-			} else if ("-l".equalsIgnoreCase(args[i])) {
+				polyAfile = new File(args[i]); //age.parseInt(args[i]);
+			} else if("-l".equalsIgnoreCase(args[i])) {
 				i++;
 				numberToExtract = numberToExtract.parseInt(args[i]);
-			} else if ("-a".equalsIgnoreCase(args[i])) {
+			} else if("-a".equalsIgnoreCase(args[i])) {
 				i++;
 				tailLength = tailLength.parseInt(args[i]);
-			} else if ("-o".equalsIgnoreCase(args[i])) {
+			} else if("-o".equalsIgnoreCase(args[i])) {
 				i++;
 				file = new File(args[i]);
-			} else {
-				printHelp = true;
+			}
+			else {
+				 printHelp = true;
 			}
 			i++;
 		}
-		if (args.length < 8 || printHelp) {
-			System.out
-					.println("USAGE: extract -f <fasta-file-name> -b <bed-file-name> -l <sequence-length> -a <poly-A-tail-length> -o <output-file-name>");
+		if( args.length < 8 || printHelp ) {
+			System.out.println("USAGE: extract -f <fasta-file-name> -b <bed-file-name> -l <sequence-length> -a <poly-A-tail-length> -o <output-file-name>");
 			return;
 		}
-
-		String command = "polyAextract" + "-f" + genome + "-b" + polyAfile
-				+ "-l" + numberToExtract + "-a" + tailLength + "-o" + file;
-		// polyAextract app = new
-		// polyAextract("/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa"
-		// ,"/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed",
-		// 400 , 100, "/home/reynaldo/testFile4.fa");
-
-		// This retrieves the .fai file, given the .fa file.
+		
+		String command = "polyAextract" +"-f"+ genome +"-b"+ polyAfile +"-l"+ numberToExtract +"-a"+ tailLength +"-o"+ file ;
+		//polyAextract app = new polyAextract("/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa" ,"/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed", 400 , 100, "/home/reynaldo/testFile4.fa");
+		
+		
+		//This retrieves the .fai file, given the .fa file.
 		IndexedFastaSequenceFile seqFile = new IndexedFastaSequenceFile(genome);
-		// This was left like this just for instantiation
-		ReferenceSequence refSeq = seqFile.getSubsequenceAt("chr1", 10001,
-				10005); // Notice, this takes the first 5 bases (after all the
-						// Ns)
-		// Reading from the .bed file; which contains the Poly-A sites.
-
+		//This was left like this just for instantiation
+		ReferenceSequence refSeq = seqFile.getSubsequenceAt("chr1", 10001, 10005); //Notice, this takes the first 5 bases (after all the Ns)
+		//Reading from the .bed file; which contains the Poly-A sites.
 		BasicInputParser polyAsites = new BasicInputParser(true, polyAfile);
-		// These 3 variables will serve as inputs in the getSubsequenceAt method
-		// above.
+		//These 3 variables will serve as inputs in the getSubsequenceAt method above.
 		String chromosome = "";
 		int start = 0;
 		int end = 1;
 		int extract = numberToExtract - 1;
-		//String strand;
 		String header = "";
 		String tail = tailMaker(tailLength);
-		// These next two lines are responsible for making the file.
-		Writer writer = new BufferedWriter(new FileWriter(file));
-		// This is used to make the file start off from the first line, rather
-		// than starting off on the second line.
-		int indicator = 0;
-		try {
-			// while (polyAsites.hasNext()) {
-			for (int j = 0; j < 4; j++) { // This is just for testing purposes
-				// This moves onto the next line in the poly-A site file.
+		//-------------------------Reynaldo--------------------------------
+		String minus = "-";
+		boolean isMinus = false;
+		//-------------------------Reynaldo--------------------------------
+		//These next two lines are responsible for making the file.
+        Writer writer = new BufferedWriter(new FileWriter(file));
+        //This is used to make the file start off from the first line, rather than starting off on the second line.
+        int indicator = 0;
+        try {
+	        //while (polyAsites.hasNext()) {
+        	for (int k=0; k < 4; k++) { //This is just for testing purposes
+				//This moves onto the next line in the poly-A site file.
 				polyAsites.next();
-				// This Scanner reads the line.
+				//This Scanner reads the line.
 				Scanner myScanner = new Scanner(polyAsites.getCurrentLine());
 				chromosome = myScanner.next();
-				end = myScanner.nextInt();
-				start = end - extract;
-				/*strand = myScanner.next();
-				if (strand == "+") {
-					System.out.println("hekjrhkajer");
-				}*/
+				//-------------------------Reynaldo--------------------------------
+				if (minus.equalsIgnoreCase(myScanner.findInLine("-"))) { //If the last column contains a "-".
+					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginning of the line.
+					myScanner.next(); //To skip first column in bed file.
+					start = myScanner.nextInt();
+					end = start + extract;
+					isMinus = true;
+				}
+				else { //If the last column didn't contain a minus, then it must have a "+".
+					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
+					myScanner.next(); //To skip first column in bed file.
+					end = myScanner.nextInt();
+					start = end - extract;
+				}
+				//-------------------------Reynaldo--------------------------------
 				refSeq = seqFile.getSubsequenceAt(chromosome, start, end);
-				String bases = new String(refSeq.getBases());
+				bases = new String(refSeq.getBases());
+				// -------------------------Samir---------------------------------
+				String strand;
+				String fwd;
+				String nuBases;
+				for (int j = 0; j < 4; j++) {
+					strand = myScanner.next();
+					fwd = "-";
 
-				// This part makes the .fa file
-				if (chromosome.equals(header)) {
-					writer.write("\n" + ">" + header + ":" + start + "-" + end
-							+ "+" + tailLength + "A");
-					writer.write("\n" + bases + tail);
-					// System.out.println(">"+header + ":" + start + "-" + end +
-					// "+" + tailLength + "A"); //Testing purposes
-					// System.out.println(bases + tail); //Testing purposes
-				} else {
-					if (indicator == 1) {
-						header = chromosome;
-						writer.write("\n" + ">" + header + ":" + start + "-"
-								+ end + "+" + tailLength + "A");
-						writer.write("\n" + bases + tail);
-						// System.out.println(">"+header + ":" + start + "-" +
-						// end + "+" + tailLength + "A"); //Testing purposes
-						// System.out.println(bases + tail); //Testing purposes
+					if (j >= 2 && strand.equals(fwd)) {
+						
+						
+						System.out.println(strand + "original strand:	");
+						seq();
+						
+						//nuBases = bases.replace(bases, feed );
+						
+
+					}
+					
+				}
+				
+				// -----------------------Samir-------------------------------
+				//-------------------------Reynaldo--------------------------------
+				// This part makes the .fa file if the stand is '-'
+				if (isMinus){
+					if (chromosome.equals(header)) {
+						writer.write("\n" + ">" + header + ":" + start + "-" + end+ "+" + tailLength + "A");
+						writer.write("\n" + feed + tail);
+						System.out.println(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A"); // Testing purposes
+						System.out.println(feed + tail); // Testing purposes
 					} else {
-						header = chromosome;
-						writer.write(">" + header + ":" + start + "-" + end
-								+ "+" + tailLength + "A");
-						writer.write("\n" + bases + tail);
-						// System.out.println(">"+header + ":"+ start + "-" +
-						// end + "+" + tailLength + "A"); //Testing purposes
-						// System.out.println(bases + tail); //Testing purposes
-						indicator = 1;
+						if (indicator == 1) {
+							header = chromosome;
+							writer.write("\n" + ">" + header + ":" + start + "-"+ end + "+" + tailLength + "A");
+							writer.write("\n" + feed + tail);
+							System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing purposes
+							System.out.println(feed + tail); // Testing purposes
+						} else {
+							header = chromosome;
+							writer.write(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A");
+							writer.write("\n" + feed + tail);
+							System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing
+							System.out.println(feed + tail); // Testing purposes
+							indicator = 1;
+						}
 					}
 				}
+				//-------------------------Reynaldo--------------------------------
+				//-------------------------Reynaldo--------------------------------
+				// This part makes the .fa file if the strand is '+'
+				else {
+					if (chromosome.equals(header)) {
+						writer.write("\n" + ">" + header + ":" + start + "-" + end+ "+" + tailLength + "A");
+						writer.write("\n" + bases + tail);
+						System.out.println(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A"); // Testing purposes
+						System.out.println(bases + tail); // Testing purposes
+					} else {
+						if (indicator == 1) {
+							header = chromosome;
+							writer.write("\n" + ">" + header + ":" + start + "-"+ end + "+" + tailLength + "A");
+							writer.write("\n" + bases + tail);
+							System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing purposes
+							System.out.println(bases + tail); // Testing purposes
+						} else {
+							header = chromosome;
+							writer.write(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A");
+							writer.write("\n" + bases + tail);
+							System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing
+							System.out.println(bases + tail); // Testing purposes
+							indicator = 1;
+						}
+					}
+				}
+				//-------------------------Reynaldo--------------------------------
 			}
-			writer.close();
-			polyAsites.close();
-		}
-
-		catch (net.sf.picard.PicardException e) {
-			System.out.println(e.getMessage());
-			// System.out.println(e.toString()); //For error detection
-		}
-
+	        writer.close();
+	        polyAsites.close();
+        }
+        
+        catch (net.sf.picard.PicardException e) {
+        	System.out.println(e.getMessage());
+        	//System.out.println(e.toString()); //For error detection
+        }
+               
 	}
+	
+	// ------------------------------Samir------------------------------------
 
+	// String line = null;
+	
+	public static char replace(char in) {
+		switch (in) {
+		case 'A':
+			return 'T';
+		case 'T':
+			return 'A';
+		case 'C':
+			return 'G';
+		case 'G':
+			return 'C';
+	//-------------------------Reynaldo--------------------------------
+		case 'a':
+			return 't';
+		case 't':
+			return 'a';
+		case 'c':
+			return 'g';
+		case 'g':
+			return 'c';
+		case 'R':
+			return 'Y';
+		case 'Y':
+			return 'R';
+		case 'K':
+			return 'M';
+		case 'M':
+			return 'K';
+		case 'S':
+			return 'W';
+		case 'W':
+			return 'S';
+		case 'B': case 'D': case 'H': case 'V': case 'N': case 'X': case '-':
+			return in;
+	//-------------------------Reynaldo--------------------------------
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	public static void seq() {
+		String in= bases;
+		final StringBuilder b = new StringBuilder(in.length());
+		for (int i = in.length(); i > 0; i--)
+			b.append(replace(in.charAt(i - 1)));
+		feed = b.toString();
+				
+		System.out.println(feed); //(Reynaldo)We can comment this out, but leave it like this for testing.
+				
+				
+	}
+	
+	// --------------------------------Samir----------------------------------
+	
 	public static String tailMaker(int tailLength) {
 		String tail = "";
-		for (int i = 0; i < tailLength; i++) {
-			tail = tail + "A";
+		for (int i=0; i <tailLength ; i++) {
+			tail = tail + "A"; 
 		}
 		return tail;
 	}
