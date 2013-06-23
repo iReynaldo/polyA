@@ -9,7 +9,7 @@
  * 
  * This program takes in 5 inputs.
  * 1.The first parameter is the location of the reference Genome on the hard drive.
- *   	Example below
+ * 		Example below
  * 		"/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa"
  * 
  * 2.The second parameter is the location of the Poly-A sites file on the hard drive.
@@ -45,9 +45,7 @@ String feed;
 		// This retrieves the .fai file, given the .fa file.
 		IndexedFastaSequenceFile seqFile = new IndexedFastaSequenceFile(genome);
 		// This was left like this just for instantiation
-		ReferenceSequence refSeq = seqFile.getSubsequenceAt("chr1", 10001,
-				10005); // Notice, this takes the first 5 bases (after all the
-						// Ns)
+		ReferenceSequence refSeq; // = seqFile.getSubsequenceAt("chr1", 10,10005); // Notice, this takes the first 5 bases (after all the Ns).
 		// Reading from the .bed file; which contains the Poly-A sites.
 		BasicInputParser polyAsites = new BasicInputParser(true, polyAfile);
 		// These 3 variables will serve as inputs in the getSubsequenceAt method
@@ -69,11 +67,11 @@ String feed;
 		// than starting off on the second line.
 		int indicator = 0;
 		try {
-			
-			 while (polyAsites.hasNext()) {
-			 //for (int i = 0; i < 10; i++) { // This is just for testing purposes
+			 //while (polyAsites.hasNext()) {
+			 for (int i = 0; i < 1; i++) { // This is just for testing purposes
 				// This moves onto the next line in the poly-A site file.
 				polyAsites.next();
+				
 				// This Scanner reads the line.
 				Scanner myScanner = new Scanner(polyAsites.getCurrentLine());
 				chromosome = myScanner.next();
@@ -81,15 +79,16 @@ String feed;
 				if (minus.equalsIgnoreCase(myScanner.findInLine("-"))) { //If the last column contains a "-".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginning of the line.
 					myScanner.next(); //To skip first column in bed file.
-					start = myScanner.nextInt();
+					start = myScanner.nextInt() +1;
 					end = start + extract;
 					isMinus = true;
 				}
 				else { //If the last column didn't contain a minus, then it must have a "+".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
 					myScanner.next(); //To skip first column in bed file.
-					end = myScanner.nextInt();
+					end = myScanner.nextInt() + 1;
 					start = end - extract;
+					isMinus = false;
 				}
 				//-------------------------Reynaldo--------------------------------
 				refSeq = seqFile.getSubsequenceAt(chromosome, start, end);
@@ -250,9 +249,9 @@ String feed;
 
 	public static void main(String[] args) throws IOException {
 		Prototype app = new Prototype(
-				"/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa",
-				"/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed",
-				4, 3, "/home/reynaldo/Desktop/testFile1.fa");
+				"/home/reynaldo/Documents/RegressionTest/RegressionTestGenome.fa",
+				"/home/reynaldo/Documents/RegressionTest/RegressionBedFile.bed",
+				4, 3, "/home/reynaldo/Desktop/testFile6.fa");
 	}
 
 }
