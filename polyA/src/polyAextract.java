@@ -1,5 +1,5 @@
 //Reynaldo Morillo
-// 6/2/2013
+// Samir Dahmani
 
 /**To make this program work, you need to create a folder that contains the following files:
  * 
@@ -106,7 +106,7 @@ public class polyAextract {
 				if (minus.equalsIgnoreCase(myScanner.findInLine("-"))) { //If the last column contains a "-".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginning of the line.
 					myScanner.next(); //To skip first column in bed file.
-					start = myScanner.nextInt();
+					start = myScanner.nextInt() + 1;
 					end = start + extract;
 					isMinus = true;
 				}
@@ -114,7 +114,8 @@ public class polyAextract {
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
 					myScanner.next(); //To skip first column in bed file.
 					end = myScanner.nextInt();
-					start = end - extract;
+					start = end - extract + 1;
+					isMinus = false;
 				}
 				//-------------------------Reynaldo--------------------------------
 				refSeq = seqFile.getSubsequenceAt(chromosome, start, end);
