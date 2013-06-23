@@ -114,7 +114,7 @@ public class polyAextract {
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
 					myScanner.next(); //To skip first column in bed file.
 					end = myScanner.nextInt();
-					start = end - extract + 1;
+					start = end - extract;
 					isMinus = false;
 				}
 				//-------------------------Reynaldo--------------------------------
