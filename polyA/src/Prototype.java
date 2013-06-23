@@ -86,7 +86,7 @@ String feed;
 				else { //If the last column didn't contain a minus, then it must have a "+".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
 					myScanner.next(); //To skip first column in bed file.
-					end = myScanner.nextInt() + 1;
+					end = myScanner.nextInt();
 					start = end - extract;
 					isMinus = false;
 				}
