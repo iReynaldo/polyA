@@ -26,6 +26,7 @@ import net.sf.picard.reference.*;
 import net.sf.picard.sam.CreateSequenceDictionary;
 import net.sf.picard.util.*;
 
+
 public class Prototype {
 //-------------------Samir------------------
 String bases;	
@@ -68,7 +69,7 @@ String feed;
 		int indicator = 0;
 		try {
 			 //while (polyAsites.hasNext()) {
-			 for (int i = 0; i < 1; i++) { // This is just for testing purposes
+			 for (int i = 0; i < 16 ; i++) { // This is just for testing purposes
 				// This moves onto the next line in the poly-A site file.
 				polyAsites.next();
 				
@@ -79,16 +80,19 @@ String feed;
 				if (minus.equalsIgnoreCase(myScanner.findInLine("-"))) { //If the last column contains a "-".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginning of the line.
 					myScanner.next(); //To skip first column in bed file.
-					start = myScanner.nextInt() +1;
+					start = myScanner.nextInt() + 1;
 					end = start + extract;
 					isMinus = true;
 				}
 				else { //If the last column didn't contain a minus, then it must have a "+".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
 					myScanner.next(); //To skip first column in bed file.
-					end = myScanner.nextInt();
+					end = myScanner.nextInt() + 1;
 					start = end - extract;
 					isMinus = false;
+					if (start < 0) {
+						start = 1;
+					}
 				}
 				//-------------------------Reynaldo--------------------------------
 				refSeq = seqFile.getSubsequenceAt(chromosome, start, end);
@@ -104,7 +108,7 @@ String feed;
 					if (j >= 2 && strand.equals(fwd)) {
 						
 						
-						System.out.println(strand + "original strand:	");
+						//System.out.println(strand + "original strand:	");
 						seq();
 						
 						//nuBases = bases.replace(bases, feed );
@@ -174,6 +178,7 @@ String feed;
 
 		catch (net.sf.picard.PicardException e) {
 			System.out.println(e.getMessage());
+			writer.close();
 			// System.out.println(e.toString()); //For error detection
 		}
 
@@ -232,7 +237,7 @@ String feed;
 			b.append(replace(in.charAt(i - 1)));
 		feed = b.toString();
 		
-		System.out.println(feed); //(Reynaldo)We can comment this out, but leave it like this for testing.
+		//System.out.println(feed); //(Reynaldo)We can comment this out, but leave it like this for testing.
 		
 		
 	}
@@ -251,7 +256,7 @@ String feed;
 		Prototype app = new Prototype(
 				"/home/reynaldo/Documents/RegressionTest/RegressionTestGenome.fa",
 				"/home/reynaldo/Documents/RegressionTest/RegressionBedFile.bed",
-				4, 3, "/home/reynaldo/Desktop/testFile6.fa");
+				40, 0, "/home/reynaldo/Desktop/testFile6.fa");
 	}
 
 }
