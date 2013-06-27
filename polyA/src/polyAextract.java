@@ -1,5 +1,5 @@
 //Reynaldo Morillo
-// Samir Dahmani
+// 6/2/2013
 
 /**To make this program work, you need to create a folder that contains the following files:
  * 
@@ -33,13 +33,11 @@ public class polyAextract {
 	//--------------Samir--------------
 	
 	public static void main (String[] args) throws IOException {
-		//This creates a variable of type file.
-		File genome = new File("/");
-		//This creates a variable of type file.
-		File polyAfile = new File("/");
-		Integer numberToExtract = 0;
-		Integer tailLength = 0; 
-		File file = new File("OutputFile");
+		File genome = null;
+		File polyAfile = null;
+		Integer numberToExtract = null;
+		Integer tailLength = null; 
+		File file = null;
 		int i=0;
 		boolean printHelp = false;
 		while(i<args.length && args[i].charAt(0)=='-') {
@@ -64,12 +62,12 @@ public class polyAextract {
 			}
 			i++;
 		}
-		if( args.length < 8 || printHelp ) {
+		if( args.length < 10 || printHelp ) {
 			System.out.println("USAGE: extract -f <fasta-file-name> -b <bed-file-name> -l <sequence-length> -a <poly-A-tail-length> -o <output-file-name>");
 			return;
 		}
 		
-		String command = "polyAextract" +"-f"+ genome +"-b"+ polyAfile +"-l"+ numberToExtract +"-a"+ tailLength +"-o"+ file ;
+		//String command = "polyAextract" +"-f"+ genome +"-b"+ polyAfile +"-l"+ numberToExtract +"-a"+ tailLength +"-o"+ file ;
 		//polyAextract app = new polyAextract("/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa" ,"/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed", 400 , 100, "/home/reynaldo/testFile4.fa");
 		
 		
@@ -113,7 +111,7 @@ public class polyAextract {
 				else { //If the last column didn't contain a minus, then it must have a "+".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
 					myScanner.next(); //To skip first column in bed file.
-					end = myScanner.nextInt();
+					end = myScanner.nextInt() + 1;
 					start = end - extract;
 					isMinus = false;
 				}
@@ -201,6 +199,7 @@ public class polyAextract {
         
         catch (net.sf.picard.PicardException e) {
         	System.out.println(e.getMessage());
+        	writer.close();
         	//System.out.println(e.toString()); //For error detection
         }
                
