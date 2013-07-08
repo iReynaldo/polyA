@@ -1,6 +1,3 @@
-//Reynaldo Morillo
-// 6/2/2013
-
 /**To make this program work, you need to create a folder that contains the following files:
  * 
  * 1. A reference genome file, in the format .fa
@@ -69,20 +66,33 @@ String feed;
 		int indicator = 0;
 		try {
 			 //while (polyAsites.hasNext()) {
-			 for (int i = 0; i < 16 ; i++) { // This is just for testing purposes
+			 for (int i = 0; i < 9; i++) { // This is just for testing purposes
 				// This moves onto the next line in the poly-A site file.
 				polyAsites.next();
 				
 				// This Scanner reads the line.
 				Scanner myScanner = new Scanner(polyAsites.getCurrentLine());
 				chromosome = myScanner.next();
+				int chromosomeSize = seqFile.getSequence(chromosome).length();
 				//-------------------------Reynaldo--------------------------------
-				if (minus.equalsIgnoreCase(myScanner.findInLine("-"))) { //If the last column contains a "-".
+				//This small loop puts the scanner in position to detect the if it refers to the positive or negative strand.
+				for (int k=0; k<4 ;k++){
+					myScanner.next();
+				}
+				
+				if ( myScanner.next().equalsIgnoreCase("-")/*minus.equalsIgnoreCase(myScanner.findInLine("-"))*/) { //If the last column contains a "-".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginning of the line.
 					myScanner.next(); //To skip first column in bed file.
 					start = myScanner.nextInt() + 1;
 					end = start + extract;
 					isMinus = true;
+					//Truncates if exceeds bounds.
+					if (start < 0) {
+						start = 1;
+					}
+					if (end > chromosomeSize){
+						end = chromosomeSize;
+					}
 				}
 				else { //If the last column didn't contain a minus, then it must have a "+".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
@@ -90,8 +100,12 @@ String feed;
 					end = myScanner.nextInt() + 1;
 					start = end - extract;
 					isMinus = false;
+					//Truncates if exceeds bounds.
 					if (start < 0) {
 						start = 1;
+					}
+					if (end > chromosomeSize){
+						end = chromosomeSize;
 					}
 				}
 				//-------------------------Reynaldo--------------------------------
@@ -104,16 +118,10 @@ String feed;
 				for (int j = 0; j < 4; j++) {
 					strand = myScanner.next();
 					fwd = "-";
-
 					if (j >= 2 && strand.equals(fwd)) {
-						
-						
 						//System.out.println(strand + "original strand:	");
 						seq();
-						
 						//nuBases = bases.replace(bases, feed );
-						
-
 					}
 					
 				}
@@ -256,7 +264,7 @@ String feed;
 		Prototype app = new Prototype(
 				"/home/reynaldo/Documents/RegressionTest/RegressionTestGenome.fa",
 				"/home/reynaldo/Documents/RegressionTest/RegressionBedFile.bed",
-				40, 0, "/home/reynaldo/Desktop/testFile6.fa");
+				40, 0, "/home/reynaldo/Desktop/testFile7.fa");
 	}
 
 }
