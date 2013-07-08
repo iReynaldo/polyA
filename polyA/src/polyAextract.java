@@ -1,21 +1,3 @@
-//Reynaldo Morillo
-// 6/2/2013
-
-/**To make this program work, you need to create a folder that contains the following files:
- * 
- * 1. A reference genome file, in the format .fa
- * 2. A copy of the reference genome with the following format .fai
- * 3. A file in the format .bed that conatins information about Poly-A sites.
- * 
- * This program takes in 5 inputs.
- * 1.The first parameter is the location of the reference Genome on the hard drive.
- * 		Example below
- * 		"/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa"
- * 
- * 2.The second parameter is the location of the Poly-A sites file on the hard drive.
- * 		Example below
- * 		 "/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed" */
-
 import java.io.*;
 import java.util.Scanner;
 
@@ -65,11 +47,7 @@ public class polyAextract {
 		if( args.length < 10 || printHelp ) {
 			System.out.println("USAGE: extract -f <fasta-file-name> -b <bed-file-name> -l <sequence-length> -a <poly-A-tail-length> -o <output-file-name>");
 			return;
-		}
-		
-		//String command = "polyAextract" +"-f"+ genome +"-b"+ polyAfile +"-l"+ numberToExtract +"-a"+ tailLength +"-o"+ file ;
-		//polyAextract app = new polyAextract("/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa" ,"/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed", 400 , 100, "/home/reynaldo/testFile4.fa");
-		
+		}		
 		
 		//This retrieves the .fai file, given the .fa file.
 		IndexedFastaSequenceFile seqFile = new IndexedFastaSequenceFile(genome);
@@ -100,20 +78,39 @@ public class polyAextract {
 				//This Scanner reads the line.
 				Scanner myScanner = new Scanner(polyAsites.getCurrentLine());
 				chromosome = myScanner.next();
+				int chromosomeSize = seqFile.getSequence(chromosome).length();
+				//This small loop puts the scanner in position to detect if were on the positive or negative strand.
+				for (int m=0; m<4 ;m++){
+					myScanner.next();
+				}
 				//-------------------------Reynaldo--------------------------------
-				if (minus.equalsIgnoreCase(myScanner.findInLine("-"))) { //If the last column contains a "-".
+				if (myScanner.next().equalsIgnoreCase("-")) { //If the last column contains a "-".
 					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginning of the line.
 					myScanner.next(); //To skip first column in bed file.
 					start = myScanner.nextInt() + 1;
 					end = start + extract;
 					isMinus = true;
+					//Truncates if exceeds bounds
+					if (start < 0) {
+						start = 1;
+					}
+					if (end > chromosomeSize){
+						end = chromosomeSize;
+					}
 				}
 				else { //If the last column didn't contain a minus, then it must have a "+".
-					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginnig of the line.
+					myScanner= new Scanner(polyAsites.getCurrentLine()); //To reset the scanner to the beginning of the line.
 					myScanner.next(); //To skip first column in bed file.
 					end = myScanner.nextInt() + 1;
 					start = end - extract;
 					isMinus = false;
+					//Truncates if exceeds bounds
+					if (start < 0) {
+						start = 1;
+					}
+					if (end > chromosomeSize){
+						end = chromosomeSize;
+					}
 				}
 				//-------------------------Reynaldo--------------------------------
 				refSeq = seqFile.getSubsequenceAt(chromosome, start, end);
@@ -125,16 +122,10 @@ public class polyAextract {
 				for (int j = 0; j < 4; j++) {
 					strand = myScanner.next();
 					fwd = "-";
-
 					if (j >= 2 && strand.equals(fwd)) {
-						
-						
-						System.out.println(strand + "original strand:	");
+						//System.out.println(strand + "original strand:	"); //Just for Testing
 						seq();
-						
 						//nuBases = bases.replace(bases, feed );
-						
-
 					}
 					
 				}
@@ -255,7 +246,7 @@ public class polyAextract {
 			b.append(replace(in.charAt(i - 1)));
 		feed = b.toString();
 				
-		System.out.println(feed); //(Reynaldo)We can comment this out, but leave it like this for testing.
+		//System.out.println(feed); //(Reynaldo)We can comment this out, but leave it like this for testing.
 				
 				
 	}
