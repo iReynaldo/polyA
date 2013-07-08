@@ -22,4 +22,4 @@ This program takes in 5 inputs.
  	  
     Example:
     
- 		 "/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed" */
+    "/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed" */
