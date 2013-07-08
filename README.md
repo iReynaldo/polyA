@@ -13,9 +13,13 @@ To make this program work, you need to create a folder that contains the followi
 This program takes in 5 inputs.
 
 1.The first parameter is the location of the reference Genome on the hard drive.
-  	a.Example below
- 		 "/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa"
+  	
+   Example:
+   
+ 		"/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa"
  
 2.The second parameter is the location of the Poly-A sites file on the hard drive.
- 	  a.Example below
+ 	  
+    Example:
+    
  		 "/home/reynaldo/Documents/GSM747470_human_brain.sites.clustered.hg19.bed" */
